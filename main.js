@@ -7,6 +7,12 @@ const newEntryForm = document.getElementById("new-calorie-form");
 const editCalInput = document.querySelector("#edit-form-container input");
 const editNotesInput = document.querySelector("#edit-form-container textarea");
 const editEntryForm = document.querySelector("#edit-calorie-form");
+const bmrWeight = document.querySelector("#bmr-weight");
+const bmrHeight = document.querySelector("#bmr-height");
+const bmrAge = document.querySelector("#bmr-age");
+const bmrForm = document.querySelector("#bmr-calculator");
+const lowBMRSpan = document.getElementById("lower-bmr-range");
+const highBMRSpan = document.getElementById("higher-bmr-range");
 
 
 
@@ -88,7 +94,7 @@ function addObj() {
     },
     body: JSON.stringify({
       api_v1_calorie_entry: {
-        calorie: parseInt(calInput.value),
+        calorie: calInput.value,
         note: notesInput.value
       }
     })
@@ -189,13 +195,42 @@ function editObj() {
 
 
 
+////// BASAL METABOLIC RATE FUNCTIONS //////
+
+//Determines if BMR entry form is properly filled in, provides indications if not
+function submitBRM() {
+  event.preventDefault();
+  if (bmrWeight.value && bmrHeight.value && bmrAge.value) {
+    progressBar.setAttribute("max", calculateBRM());
+    bmrWeight.style.borderColor = "";
+    bmrHeight.style.borderColor = "";
+    bmrAge.style.borderColor = "";
+  } else {
+    bmrWeight.value ? bmrWeight.style.borderColor = "" : bmrWeight.style.borderColor = "red";
+    bmrHeight.value ? bmrHeight.style.borderColor = "" : bmrHeight.style.borderColor = "red";
+    bmrAge.value ? bmrAge.style.borderColor = "" : bmrAge.style.borderColor = "red";
+  }
+}
+
+
+function calculateBRM() {
+  let weight = parseInt(bmrWeight.value);
+  let height = parseInt(bmrHeight.value);
+  let age = parseInt(bmrAge.value);
+  lowBMRSpan.innerHTML = Math.round((655 + (4.35 * weight) + (4.7 * height) - (4.7 * age)));
+  highBMRSpan.innerHTML = Math.round((66 + (6.23 * weight) + (12.7 * height) - (6.8 * age)));
+  return Math.round(((parseInt(lowBMRSpan.innerHTML) + parseInt(highBMRSpan.innerHTML)) / 2));
+}
+
+
+
 
 ////// EVENT LISTENERS //////
 entryList.addEventListener("click", deleteEntryHandler);
 entryList.addEventListener("click", editEntryHandler);
 newEntryForm.addEventListener("submit", submitEntry);
 editEntryForm.addEventListener("submit", submitEdit);
-
+bmrForm.addEventListener("submit", submitBRM)
 
 ////// INVOKED FUNCTIONS //////
 
