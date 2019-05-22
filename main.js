@@ -4,6 +4,10 @@ const progressBar = document.getElementsByTagName("progress")[0];
 const calInput = document.getElementById("form-input-cal");
 const notesInput = document.getElementById("form-input-notes");
 const newEntryForm = document.getElementById("new-calorie-form");
+const editCalInput = document.querySelector("#edit-form-container input");
+const editNotesInput = document.querySelector("#edit-form-container textarea");
+const editEntryForm = document.querySelector("#edit-calorie-form");
+
 
 
 //Fetches data of all calorie entries
@@ -97,8 +101,8 @@ function addObj() {
 //Manages bubbling for delete buttons on entryList
 function deleteEntryHandler() {
   let clicked = event.target;
-  let entryId = clicked.parentElement.parentElement.parentElement.dataset.id;
   if (clicked.dataset.svg === "trash") {
+    let entryId = clicked.parentElement.parentElement.parentElement.dataset.id;
     deleteEntry(entryId);
   }
 }
@@ -122,17 +126,75 @@ function deleteObj() {
   }
 }
 
+////// EDIT ENTRY FUNCTIONS //////
 
+//Manages bubbling for edit buttons on entryList
+function editEntryHandler() {
+  let clicked = event.target;
+  if (clicked.dataset.svg === "pencil") {
+    let entryId = clicked.parentElement.parentElement.parentElement.dataset.id;
+    populateEditForm(entryId);
+  }
+}
 
+//Populates edit form fields when edit button is clicked, resets border color to black
+function populateEditForm(entryId) {
+  editCalInput.value = document.querySelector(`li[data-id="${entryId}"] strong `).innerHTML;
+  editNotesInput.value = document.querySelector(`li[data-id="${entryId}"] em `).innerHTML.slice(0, -8);
+  editCalInput.style.borderColor = "";
+  editNotesInput.style.borderColor = "";
+  editEntryForm.dataset.entryId = entryId;
+}
 
+//Determines if edit calorie entry form is properly filled it, provides indications if not
+function submitEdit() {
+  event.preventDefault();
+  if (editCalInput.value && editNotesInput.value) {
+    editEntry(event.target)
+    editCalInput.style.borderColor = "";
+    editNotesInput.style.borderColor = "";
+  } else {
+    editCalInput.value ? editCalInput.style.borderColor = "" : editCalInput.style.borderColor = "red";
+    editNotesInput.value ? editNotesInput.style.borderColor = "" : editNotesInput.style.borderColor = "red";
+  }
+}
+
+//Fetch request to edit calorie entry from database
+function editEntry(entryId) {
+  fetch(`http://localhost:3000/api/v1/calorie_entries/${entryId.dataset.entryId}`, editObj())
+    .then( res => res.json() )
+    .then( () => {
+      fetchAllData()
+      document.getElementById("x-edit-button").click();
+    })
+    .catch( error => console.log(error.message) )
+}
+
+//Returns editObj used in deleteEntry
+function editObj() {
+  return {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({
+      api_v1_calorie_entry: {
+        calorie: parseInt(editCalInput.value),
+        note: editNotesInput.value
+      }
+    })
+  }
+}
 
 
 
 
 ////// EVENT LISTENERS //////
 entryList.addEventListener("click", deleteEntryHandler);
+entryList.addEventListener("click", editEntryHandler);
 newEntryForm.addEventListener("submit", submitEntry);
-
+editEntryForm.addEventListener("submit", submitEdit);
 
 
 ////// INVOKED FUNCTIONS //////
