@@ -10,7 +10,7 @@
   <link rel="stylesheet" type="text/css" media="screen" href="main.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit-icons.min.js"></script>
-  <script src="main.js"></script>
+  <script src="main.js" defer></script>
 </head>
 
 <body>
@@ -26,13 +26,13 @@
       <form id="bmr-calulator" class="uk-card-header">
         <h3>Basal Metabolic Rate</h3>
         <div class="uk-margin-small">
-          <input class="uk-input" type="number" placeholder="Weight (lbs)" min="1">
+          <input id = 'weight-input' class="uk-input" type="number" placeholder="Weight (lbs)" min="1">
         </div>
         <div class="uk-margin-small">
-          <input class="uk-input" type="number" placeholder="Height (inches)" min="1">
+          <input id = 'height-input' class="uk-input" type="number" placeholder="Height (inches)" min="1">
         </div>
         <div class="uk-margin-small">
-          <input class="uk-input" type="number" placeholder="Age (years)" min="1">
+          <input id = 'age-input' class="uk-input" type="number" placeholder="Age (years)" min="1">
         </div>
         <button class="uk-button uk-button-default"
           uk-tooltip="title: BMR (Basal Metabolic Rate) is the number of calories required to keep your body functioning at rest. This is the amount of calories your body burns even if you did nothing all day.; pos: left">Calculate
@@ -57,12 +57,12 @@
         <h3>Record calorie intake:</h3>
         <div>
           <div class="uk-margin-small">
-            <input type="number" class="uk-input" min="0" placeholder="Calories (kcal)">
+            <input id = 'kcal-input' type="number" class="uk-input" min="0" placeholder="Calories (kcal)">
           </div>
           <div class="uk-margin-small">
-            <textarea type="text" class="uk-textarea" placeholder="Notes" style="resize:none"></textarea>
+            <textarea id = 'note-input' type="text" class="uk-textarea" placeholder="Notes" style="resize:none"></textarea>
           </div>
-          <button class="uk-button uk-button-default">Add Calorie Intake</button>
+          <button id = "add-btn" class="uk-button uk-button-default">Add Calorie Intake</button>
         </div>
       </form>
 
@@ -122,7 +122,7 @@
   <div id="edit-form-container" uk-modal>
     <div class="uk-modal-dialog uk-modal-body">
       <button class="uk-modal-close-default" type="button" uk-close></button>
-      <form id="new-calorie-form">
+      <form id="edit-calorie-form">
         <h3>Edit calorie intake:</h3>
         <div>
           <div class="uk-margin-small">
